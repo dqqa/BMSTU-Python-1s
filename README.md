@@ -1,2 +1,2 @@
 # BMSTU
-IU7 BMSTU
+A repository for labs and unversity projects
