@@ -9,6 +9,7 @@
 import math
 
 EPS = 1e-4
+vertical_k = 1e20
 
 # Блок ввода
 p1, p2, p3 = [
@@ -132,10 +133,11 @@ side_segments = ((p1, p2), (p1, p3), (p2, p3))
 
 # Определение уравнения прямой для нового отрезка
 if dx1 == dx2:
-    line_seg_k = 1e20
+    line_seg_k = vertical_k
 else:
     line_seg_k = (dy2 - dy1) / (dx2 - dx1)
 line_seg_b = dy1 - line_seg_k * dx1
+
 has_intersect = False
 
 for side in side_segments:
@@ -143,13 +145,14 @@ for side in side_segments:
 
     # Уравнение прямой для стороны треугольника
     if x2 == x1:
-        side_k = 1e20
+        side_k = vertical_k
     else:
         side_k = (y2 - y1) / (x2 - x1)
     side_b = y1 - side_k * x1
     # Если коэффициенты К равны, то эти прямые параллельны и не пересекутся
     if abs(side_k - line_seg_k) < EPS:
         continue
+    
     # Находим абсциссу точки пересечения прямых
     # Если она принадлежит промежуткам [x1, x2] и [dx1, dx2], 
     # то она является точкой пересечения отрезков
