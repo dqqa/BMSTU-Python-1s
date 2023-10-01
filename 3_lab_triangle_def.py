@@ -95,9 +95,8 @@ for vec1, vec2, s_opposite in groups:
     vec2_len = (vec2[0] ** 2 + vec2[1] ** 2) ** 0.5
     angle = 0
     if vec1_len > 0 and vec2_len > 0:
-        angle = math.acos(
-            (vec1[0] * vec2[0] + vec1[1] * vec2[1]) / (vec1_len * vec2_len)
-        )
+        cos = min(max((vec1[0] * vec2[0] + vec1[1] * vec2[1]) / (vec1_len * vec2_len), 0), 1)
+        angle = math.acos(cos)
     else:
         angle_sum = 2 * math.pi
         min_dist = 0
@@ -157,9 +156,10 @@ for side in side_segments:
     # Если она принадлежит промежуткам [x1, x2] и [dx1, dx2], 
     # то она является точкой пересечения отрезков
     x_intersect = (side_b - line_seg_b) / (line_seg_k - side_k)
-    if min(x1, x2) <= x_intersect <= max(x1, x2) and \
-        min(dx1, dx2) <= x_intersect <= max(dx1, dx2):
+    if min(x1, x2) - EPS <= x_intersect <= max(x1, x2) + EPS and \
+        min(dx1, dx2) - EPS <= x_intersect <= max(dx1, dx2) + EPS:
         has_intersect = True
+        # print(f"Точка пересечения: ({x_intersect:.6g}, {side_k*x_intersect+side_b:.6g})")
         break
 
 if has_intersect:
