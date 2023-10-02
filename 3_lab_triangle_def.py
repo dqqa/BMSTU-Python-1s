@@ -95,7 +95,7 @@ for vec1, vec2, s_opposite in groups:
     vec2_len = (vec2[0] ** 2 + vec2[1] ** 2) ** 0.5
     angle = 0
     if vec1_len > 0 and vec2_len > 0:
-        cos = min(max((vec1[0] * vec2[0] + vec1[1] * vec2[1]) / (vec1_len * vec2_len), 0), 1)
+        cos = min(max((vec1[0] * vec2[0] + vec1[1] * vec2[1]) / (vec1_len * vec2_len), -1), 1)
         angle = math.acos(cos)
     else:
         angle_sum = 2 * math.pi
