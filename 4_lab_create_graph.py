@@ -41,7 +41,7 @@ _max_digit_cnt = len(max([format(l[0], ".6g") for l in table], key=len))
 _min = min(table, key=lambda x: x[1])[1]
 _max = max(table, key=lambda x: x[1])[1]
 
-print(f"Максимальное значение функции d(x) на этом промежутке: {_max:.6g}")
+print(f"Максимальное значение функции f1(x) на этом промежутке: {_max:.6g}")
 print()
 
 should_draw_graph = input(">>> Отрисовать график? (Д, н): ").lower()
@@ -64,6 +64,7 @@ for i in range(y_points):
 print(scale_ruler)
 
 # Вычисление позиции оси абсцисс
+x_axis_pos = 0
 if draw_x_axis:
     x_axis_pos = round(size * (1 - _max / (_max - _min)))
 
