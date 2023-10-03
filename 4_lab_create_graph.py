@@ -13,7 +13,9 @@ f2 = lambda x: math.sin(x)
 start_x, end_x, step = map(
     float, input(">>> Задайте область построения графика и шаг через пробел: ").split()
 )
-y_points = int(input(">>> Введите количество засечек на оси y: "))
+y_points = int(
+    input(">>> Введите количество засечек на оси y (по умолчанию: 4): ") or 4
+)
 
 if not (4 <= y_points <= 8):
     print("Введите число от 4 до 8")
@@ -30,14 +32,17 @@ print(" " + "_" * 88)
 print(f'|{"Номер":^10}|{"x":^25}|{"f1":^25}|{"f2":^25}|')
 print(" " + "-" * 88)
 
-while x < end_x+eps:
-    number += 1
+while x < end_x + eps:
+    x = start_x + number * step
     cur_y1 = f1(x)
     cur_y2 = f2(x)
-    print(f"|{number:^10}|{x:^25.6g}|{cur_y1:^25.6g}|{cur_y2:^25.6g}|")
     table.append((x, cur_y1))
+
+    print(f"|{number+1:^10}|{x:^25.6g}|{cur_y1:^25.6g}|{cur_y2:^25.6g}|")
     if cur_y1 <= 0:
         draw_x_axis = True
+
+    number += 1
     x += step
 
 print(" " + "-" * 88)
@@ -63,12 +68,11 @@ last_y = 0
 scale_ruler = " " * (_max_digit_cnt + 2)
 for i in range(y_points):
     y_value = _min + point_step * i
-    # if abs(y_value) < eps:
-    #     y_value = 0
     virt_y_pos = round((y_value - _min) * scale)
     f_y = format(y_value, ".6g")
     scale_ruler += " " * (virt_y_pos - last_y) + f"|{f_y}"
     last_y = virt_y_pos + len(f_y) + 1
+
 print(scale_ruler)
 
 # Вычисление позиции оси абсцисс
