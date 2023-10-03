@@ -4,7 +4,7 @@ import math
 # Константы
 size = 120  # Количество колонок, выделенное под график
 # Функции
-f1 = lambda x: 0.5 * x
+f1 = lambda x: (1+x**2)**0.5-x**3
 f2 = lambda x: math.sin(x)
 
 # Блок ввода
@@ -81,7 +81,7 @@ for k, v in table:
         print(" " * (virt_y_pos - 1) + "*")
     else:
         if v < 0:
-            virt_y_pos = x_axis_pos - round(x_axis_pos * (v / _min))
+            virt_y_pos = math.floor(x_axis_pos - x_axis_pos * (v / _min))
             print(" " * virt_y_pos + "*" + " " * (x_axis_pos - virt_y_pos - 1) + "|")
         elif v > 0:
             virt_y_pos = round((size - x_axis_pos) * (v / _max))
