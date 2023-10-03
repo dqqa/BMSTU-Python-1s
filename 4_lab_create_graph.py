@@ -3,8 +3,9 @@ import math
 
 # Константы
 size = 120  # Количество колонок, выделенное под график
+eps = 1e-4
 # Функции
-f1 = lambda x: (1+x**2)**0.5-x**3
+f1 = lambda x: (1 + x**2) ** 0.5 - x**3
 f2 = lambda x: math.sin(x)
 
 # Блок ввода
@@ -12,7 +13,9 @@ start_x, end_x, step = map(
     float, input(">>> Задайте область построения графика и шаг через пробел: ").split()
 )
 y_points = int(input(">>> Введите количество засечек на оси y: "))
-
+if not (4 <= y_points <= 8):
+    print("Введите число от 4 до 8")
+    exit(1)
 # Отрисовка таблицы и подсчет значений
 table = []
 x = start_x
@@ -24,7 +27,7 @@ print(" " + "_" * 88)
 print(f'|{"Номер":^10}|{"x":^25}|{"f1":^25}|{"f2":^25}|')
 print(" " + "-" * 88)
 
-while x <= end_x:
+while x < end_x+eps:
     number += 1
     cur_y1 = f1(x)
     cur_y2 = f2(x)
@@ -57,6 +60,8 @@ last_y = 0
 scale_ruler = " " * (_max_digit_cnt + 2)
 for i in range(y_points):
     y_value = _min + point_step * i
+    # if abs(y_value) < eps:
+    #     y_value = 0
     virt_y_pos = round((y_value - _min) * scale)
     f_y = format(y_value, ".6g")
     scale_ruler += " " * (virt_y_pos - last_y) + f"|{f_y}"
@@ -64,7 +69,7 @@ for i in range(y_points):
 print(scale_ruler)
 
 # Вычисление позиции оси абсцисс
-x_axis_pos = 0
+x_axis_pos = -2
 if draw_x_axis:
     x_axis_pos = round(size * (1 - _max / (_max - _min)))
 
