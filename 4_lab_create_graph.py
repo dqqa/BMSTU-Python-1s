@@ -44,7 +44,7 @@ _max = max(table, key=lambda x: x[1])[1]
 print(f"Максимальное значение функции f1(x) на этом промежутке: {_max:.6g}")
 print()
 
-should_draw_graph = input(">>> Отрисовать график? (Д, н): ").lower()
+should_draw_graph = input(">>> Отрисовать график функции f1(x)? (Д, н): ").lower()
 if should_draw_graph in ("н", "n"):
     exit(0)
 print()
