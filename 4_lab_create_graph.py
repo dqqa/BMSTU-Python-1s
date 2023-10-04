@@ -3,11 +3,11 @@ import math
 
 # Константы
 size = 120  # Количество колонок, выделенное под график
-eps = 1e-4
 
 # Функции
-f1 = lambda x: (1 + x**2) ** 0.5 - x**3
-f2 = lambda x: math.sin(x)
+f1 = lambda x: x**3 + 6.1 * x**2 - 35.4 * x - 25.7
+f2 = lambda x: x**2 - math.cos(math.pi * x)
+f3 = lambda x: (f1(x) ** 2 + f2(x) ** 2) ** 0.5
 
 # Блок ввода
 start_x, end_x, step = map(
@@ -23,39 +23,44 @@ if not (4 <= y_points <= 8):
 
 # Отрисовка таблицы и подсчет значений
 table = []
-x = start_x
-number = 0
-draw_x_axis = False
+num_iters = math.floor((end_x - start_x) / step)
+draw_x_axis = True
+positive_a2_vals = 0
 
-print(f'\n{"Таблица значений для функций":^88}')
-print(" " + "_" * 88)
-print(f'|{"Номер":^10}|{"x":^25}|{"f1":^25}|{"f2":^25}|')
-print(" " + "-" * 88)
+print(f'\n{"Таблица значений для функций":^86}')
+print(" " + "_" * 86)
+print(f'|{"Номер":^10}|{"x":^18}|{"a1":^18}|{"a2":^18}|{"a3":^18}|')
+print(" " + "-" * 86)
 
-while x < end_x + eps:
-    x = start_x + number * step
+for i in range(num_iters+1):
+    x = start_x + i * step
     cur_y1 = f1(x)
     cur_y2 = f2(x)
+    cur_y3 = f3(x)
     table.append((x, cur_y1))
 
-    print(f"|{number+1:^10}|{x:^25.6g}|{cur_y1:^25.6g}|{cur_y2:^25.6g}|")
-    if cur_y1 <= 0:
-        draw_x_axis = True
+    print(f"|{i+1:^10}|{x:^18.6g}|{cur_y1:^18.6g}|{cur_y2:^18.6g}|{cur_y3:^18.6g}|")
 
-    number += 1
+    if cur_y2 > 0:
+        positive_a2_vals += 1
+
+    i += 1
     x += step
 
-print(" " + "-" * 88)
+print(" " + "-" * 86)
+
+if all(y < 0 for _, y in table) or all(y > 0 for _, y in table):
+    draw_x_axis = False
 
 # Определение минимума и максимума функции
 _max_digit_cnt = len(max([format(l[0], ".6g") for l in table], key=len))
 _min = min(table, key=lambda x: x[1])[1]
 _max = max(table, key=lambda x: x[1])[1]
 
-print(f"Максимальное значение функции f1(x) на этом промежутке: {_max:.6g}")
+print(f"Количество положительных значений a2(x) на этом промежутке: {positive_a2_vals}")
 print()
 
-should_draw_graph = input(">>> Отрисовать график функции f1(x)? (Д, н): ").lower()
+should_draw_graph = input(">>> Отрисовать график функции a1(x)? (Д, н): ").lower()
 if should_draw_graph in ("н", "n"):
     exit(0)
 print()
