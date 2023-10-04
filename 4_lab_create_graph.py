@@ -13,12 +13,23 @@ f3 = lambda x: (f1(x) ** 2 + f2(x) ** 2) ** 0.5
 start_x, end_x, step = map(
     float, input(">>> Задайте область построения графика и шаг через пробел: ").split()
 )
+error = False
+if end_x < start_x:
+    print("Конечное значение должно быть больше начального!")
+    error = True
+if step < 0:
+    print("Шаг не может быть отрицательным!")
+    error = True
+
 y_points = int(
     input(">>> Введите количество засечек на оси y (по умолчанию: 4): ") or 4
 )
 
 if not (4 <= y_points <= 8):
     print("Введите число от 4 до 8")
+    error = True
+
+if error:
     exit(1)
 
 # Отрисовка таблицы и подсчет значений
