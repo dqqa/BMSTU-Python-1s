@@ -14,28 +14,28 @@ step, iter_cnt = map(
 )
 
 # Блок вычислений
-print(" " + "-" * 37)
-print(f"|{'№ итерации':^15}|{'t':^10}|{'s':^10}|")
-print(" " + "-" * 37)
+print(" " + "-" * 39)
+print(f"|{'№ итерации':^11}|{'t':^13}|{'s':^13}|")
+print(" " + "-" * 39)
 
 i = 0
-res = x
+res = 0
 is_done = False
 while True:
     cur = 1 / ((2 * i + 1) * x ** (2 * i + 1))
     res += cur
     i += 1
     if (i - 1) % step == 0:
-        print(f"|{i:<15}|{cur:^10.5g}|{res:^10.5g}|")
+        print(f"|{i:<11}|{cur:^13.5g}|{res:^13.5g}|")
     if cur <= accuracy:
         is_done = True
         break
     if i >= iter_cnt:
         break
-print(" " + "-" * 37)
+print(" " + "-" * 39)
 
 # Блок вывода
 if not is_done:
     print(f"За {iter_cnt} итераций достичь необходимой точности не удалось!")
 else:
-    print(f"Сумма бесконечного ряда - {res:.5g}, вычислена за {i} итераций.")
+    print(f"Сумма бесконечного ряда - {res:.6g}, вычислена за {i} итераций.")
