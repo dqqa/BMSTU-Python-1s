@@ -13,20 +13,23 @@ for i in range(y_size):
 
 # Блок вычислений
 max_sum, min_sum = 0, math.inf
-max_l, min_l = 0, 0
-for i, l in enumerate(matrix):
-    s = sum(l)
+max_c, min_c = 0, 0
+
+for c in range(y_size):
+    s = 0
+    for i in range(y_size):
+        s += matrix[i][c]
     if s < min_sum:
-        min_l = i
+        min_c = c
         min_sum = s
     if s > max_sum:
-        max_l = i
+        max_c = c
         max_sum = s
 
 for i in range(len(matrix[0])):
-    matrix[max_l][i], matrix[min_l][i] = matrix[min_l][i], matrix[max_l][i]
+    matrix[i][max_c], matrix[i][min_c] = matrix[i][min_c], matrix[i][max_c]
     
 # Блок вывода
 for i, l in enumerate(matrix):
-    fstr = "".join([f"{e:<10}" for e in l])
+    fstr = "".join([f"{e:<8}" for e in l])
     print(f"matrix[{i}] = {fstr}")
