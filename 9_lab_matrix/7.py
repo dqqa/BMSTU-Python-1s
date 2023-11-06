@@ -19,10 +19,12 @@ def pprint_mat(mat, name):
     print()
 
 
-X, Y, Z = map(int, input(">>> Введите размерность трехмерного списка через пробел: "))
+X, Y, Z = map(
+    int, input(">>> Введите размерность трехмерного списка через пробел: ").split()
+)
 
 lst = [[[0 for k in range(Z)] for j in range(Y)] for i in range(X)]
 input_3d_arr(lst, X, Y, Z)
 
-i = int(input(">>> Введите i: "))
+i = int(input(">>> Введите i: ")) - 1
 pprint_mat(lst[i], f"lst[{i}]")
