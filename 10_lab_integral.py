@@ -9,6 +9,38 @@ func = lambda x: math.sin(x)  # Интегрируемная функция
 func_primitive = lambda x: -math.cos(x)  # Первообразная
 
 
+def safe_multiple_input(msg, _type, count, sep=" "):
+    while True:
+        mapped = []
+        usr_input = input(msg).split(sep)
+        all_done = True
+        if len(usr_input) != count:
+            print(
+                f"Необходимо ввести {count} элементов, но было введено {len(usr_input)}"
+            )
+            continue
+        for item in usr_input:
+            try:
+                converted = _type(item)
+                mapped.append(converted)
+            except Exception as e:
+                all_done = False
+                print(f"Вызвано исключение {e}")
+                print(f"Введено неверное значение ({item!r})")
+                break
+        if all_done:
+            return mapped
+
+
+def safe_num_input(msg, _type):
+    while True:
+        usr_input = input(msg)
+        try:
+            return _type(usr_input)
+        except ValueError:
+            print(f"Введено неверное значение ({usr_input!r})")
+
+
 def integrate_middle(f, start, stop, N):
     result = 0
     step = (stop - start) / N
@@ -54,13 +86,10 @@ def err_rel(res1, res2):
 
 
 def main():
-    N1 = int(input(">>> Введите количество участков разбиения N1: "))
-    N2 = int(input(">>> Введите количество участков разбиения N2: "))
-    a, b = map(
-        float,
-        input(
-            ">>> Введите начало и конец отрезка интегрирования через пробел: "
-        ).split(),
+    N1 = safe_num_input(">>> Введите количество участков разбиения N1: ", int)
+    N2 = safe_num_input(">>> Введите количество участков разбиения N2: ", int)
+    a, b = safe_multiple_input(
+        ">>> Введите начало и конец отрезка интегрирования через пробел: ", float, 2
     )
 
     i1 = integrate_middle(func, a, b, N1)
@@ -76,14 +105,18 @@ def main():
     print(f"|{'Метод 2':<15}|{i3:^15.6g}|{i4:^15.6g}|")
     print(" " + "-" * 47)
 
-    min_prec = float(input(">>> Введите необходимую точность: "))
+    min_prec = safe_num_input(">>> Введите необходимую точность: ", float)
 
     if abs(prim_diff - i2) > abs(prim_diff - i4):
         less_prec = lambda x: integrate_middle(func, a, b, x)
-        print("Метод срединных прямоугольников менее точен по сравнению с методом парабол")
+        print(
+            "Метод срединных прямоугольников менее точен по сравнению с методом парабол"
+        )
     else:
         less_prec = lambda x: integrate_parabolas(func, a, b, x)
-        print("Метод парабол менее точен по сравнению с методом срединных прямоугольников")
+        print(
+            "Метод парабол менее точен по сравнению с методом срединных прямоугольников"
+        )
 
     print(" " + "_" * 47)
     print(f"|{'Метод':^15}|{'Сред. прямоуг.':^15}|{'Парабол':^15}|")
@@ -94,7 +127,9 @@ def main():
 
     min_n, int_with_prec = calc_with_prec(less_prec, min_prec)
     print(f"Вычисленное значение интеграла с точностью {min_prec}: {int_with_prec:.6g}")
-    print(f"Для вычисления интеграла с заданной точностью требуется {min_n} участков разбиения")
+    print(
+        f"Для вычисления интеграла с заданной точностью требуется {min_n} участков разбиения"
+    )
 
 
 if __name__ == "__main__":
