@@ -5,11 +5,11 @@
 # 2 метод - парабол
 import math
 
-func = lambda x: math.sin(x)  # Интегрируемная функция
+func = lambda x: math.sin(x)  # Интегрируемая функция
 func_primitive = lambda x: -math.cos(x)  # Первообразная
 
 
-def safe_multiple_input(msg, _type, count, sep=" "):
+def safe_multiple_input(msg: str, _type, count: int, sep: str = " ") -> list:
     while True:
         mapped = []
         usr_input = input(msg).split(sep)
@@ -32,7 +32,7 @@ def safe_multiple_input(msg, _type, count, sep=" "):
             return mapped
 
 
-def safe_num_input(msg, _type):
+def safe_num_input(msg: str, _type):
     while True:
         usr_input = input(msg)
         try:
@@ -49,27 +49,27 @@ def integrate_middle(f, start, stop, N):
     return result
 
 
-def integrate_parabolas(f, start, stop, N):
+def integrate_parabolas(f, start: float, stop: float, N: int):
     N = math.ceil(N / 2) * 2
 
     step = (stop - start) / N
     result = 0
     for i in range(0, N, 2):
         result += (step / 3) * (
-            f(step * i + start)
-            + 4 * f(step * (i + 1) + start)
-            + f(step * (i + 2) + start)
+                f(step * i + start)
+                + 4 * f(step * (i + 1) + start)
+                + f(step * (i + 2) + start)
         )
     return result
 
 
-def calc_with_prec(f, prec, max_attempts=None):
+def calc_with_prec(f, prec: float, max_attempts: int = None) -> tuple[int, float]:
     N = 2
     integral = f(N)
     integral_2 = f(N * 2)
     N *= 2
     i = 0
-    while abs(integral - integral_2) < prec or (max_attempts and i <= max_attempts):
+    while abs(integral - integral_2) > prec or (max_attempts and i <= max_attempts):
         i += 1
         integral = integral_2
         integral_2 = f(N * 2)
@@ -77,15 +77,15 @@ def calc_with_prec(f, prec, max_attempts=None):
     return N, integral_2
 
 
-def err_abs(res1, res2):
+def err_abs(res1: float, res2: float) -> float:
     return abs(res2 - res1)
 
 
-def err_rel(res1, res2):
+def err_rel(res1: float, res2: float) -> float:
     return abs(err_abs(res1, res2) / res2)
 
 
-def main():
+def main() -> None:
     N1 = safe_num_input(">>> Введите количество участков разбиения N1: ", int)
     N2 = safe_num_input(">>> Введите количество участков разбиения N2: ", int)
     a, b = safe_multiple_input(
@@ -108,12 +108,12 @@ def main():
     min_prec = safe_num_input(">>> Введите необходимую точность: ", float)
 
     if abs(prim_diff - i2) > abs(prim_diff - i4):
-        less_prec = lambda x: integrate_middle(func, a, b, x)
+        less_accurate = lambda x: integrate_middle(func, a, b, x)
         print(
             "Метод срединных прямоугольников менее точен по сравнению с методом парабол"
         )
     else:
-        less_prec = lambda x: integrate_parabolas(func, a, b, x)
+        less_accurate = lambda x: integrate_parabolas(func, a, b, x)
         print(
             "Метод парабол менее точен по сравнению с методом срединных прямоугольников"
         )
@@ -125,7 +125,7 @@ def main():
     print(f"|{'Отн. погр.':<15}|{err_rel(i1, i2):^15.6g}|{err_rel(i3, i4):^15.6g}|")
     print(" " + "-" * 47)
 
-    min_n, int_with_prec = calc_with_prec(less_prec, min_prec)
+    min_n, int_with_prec = calc_with_prec(less_accurate, min_prec)
     print(f"Вычисленное значение интеграла с точностью {min_prec}: {int_with_prec:.6g}")
     print(
         f"Для вычисления интеграла с заданной точностью требуется {min_n} участков разбиения"
