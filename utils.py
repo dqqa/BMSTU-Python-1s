@@ -1,4 +1,28 @@
 from typing import List
+import os
+
+
+def press_anykey():
+    input("\nНажмите любую кнопку для продолжения...")
+
+
+def clear_terminal():
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
+
+
+def safe_menu_input(start, end):
+    while True:
+        usr_input = input(f">>> Выберите пункт ({start}-{end}): ")
+        try:
+            if not (start <= int(usr_input) <= end):
+                print("Пожалуйста, введите число из заданного диапазона!")
+            else:
+                return int(usr_input)
+        except ValueError:
+            print("Введено неверное значение!")
 
 
 def safe_input_list(n: int, _type):
