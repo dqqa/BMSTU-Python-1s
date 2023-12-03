@@ -50,12 +50,14 @@ def separate_by_lines(text: str) -> list[str]:
 def left_align(text: list[str]):
     max_size = len(max(text, key=lambda x: len(x.strip())))
     for i in range(len(text)):
+        text[i] = re.sub(r"\s+", " ", text[i])
         text[i] = f"{text[i].strip():<{max_size}}"
 
 
 def right_align(text: list[str]):
     max_size = len(max(text, key=lambda x: len(x.strip())))
     for i in range(len(text)):
+        text[i] = re.sub(r"\s+", " ", text[i])
         text[i] = f"{text[i].strip():>{max_size}}"
 
 
@@ -78,7 +80,7 @@ def replace_word(text: list[str], word: str, word_to_replace: str):
         if word_to_replace:
             text[i] = re.sub(f"{word}", word_to_replace, text[i])
         else:
-            text[i] = re.sub(f"\\s*{word}\\s*", word_to_replace, text[i])
+            text[i] = re.sub(f"\s*{word}\s*", " ", text[i])
 
 
 def solve_math(text: list[str]):
