@@ -2,6 +2,8 @@
 # Лабораторная работа №12 “Текстовый процессор”
 import utils
 import re
+import reverse_polish_notation
+
 
 TEXT = (
     "Все счастливые семьи похожи друг на друга, каждая несчастливая семья несчастлива по-своему. "
@@ -12,7 +14,7 @@ TEXT = (
     "но сошедшиеся люди более связаны между собой, чем они, члены семьи и домочадцы Облонских. Жена "
     "не выходила из своих комнат, мужа третий день не было дома. Дети бегали по всему дому, как потер"
     "янные; англичанка поссорилась с экономкой и написала записку приятельнице, прося приискать ей но"
-    "вое место; повар ушел вчера со двора, 12/3 во время 15*9 самого обеда; черная кухарка и кучер просили расчета."
+    "вое место; повар ушел вчера со двора, 12/3 во время 9+15*9 самого обеда; черная кухарка и кучер просили расчета."
 )
 
 
@@ -27,7 +29,7 @@ def ask_menu() -> int:
     print(
         "6. Вычисление арифметических выражений над целыми числами внутри текста (умножение и деление)."
     )
-    print("7. Найти и затем удалить cамое короткое по количеству слов предложение.")
+    print("7. Вычисление арифметических выражений при помощи преобразования в обратную польскую нотацию.")
     print("8. Выход из программы.")
     return utils.safe_menu_input(1, 8)
 
@@ -80,7 +82,7 @@ def replace_word(text: list[str], word: str, word_to_replace: str):
         if word_to_replace:
             text[i] = re.sub(f"{word}", word_to_replace, text[i])
         else:
-            text[i] = re.sub(f"\s*{word}\s*", " ", text[i])
+            text[i] = re.sub(f"\\s*{word}\\s*", " ", text[i])
 
 
 def solve_math(text: list[str]):
@@ -92,47 +94,51 @@ def solve_math(text: list[str]):
             a = int(a)
             b = int(b)
             result = 0
-            match op:
-                case "+":
-                    result = a + b
-                case "-":
-                    result = a - b
-                case "/":
-                    result = a // b
-                case "*":
-                    result = a * b
+            if op == "+":
+                result = a + b
+            elif op == "-":
+                result = a - b
+            elif op == "/":
+                result = a // b
+            elif op == "*":
+                result = a * b
             string = re.sub(f"{a}{re.escape(op)}{b}", str(result), string)
         text[i] = string
 
 
-def delete_shortest(text: list[str]):
-    pass
+def polish(text: list[str]):
+    def conv(match) -> str:
+        with_spaces = re.sub(r"(\d)([+\-*/])(?=\d)", r"\1 \2 ", match.group(1))
+        polish_notation = reverse_polish_notation.convert_to_polish(with_spaces)
+        return str(reverse_polish_notation.calc_polish(polish_notation))
+
+    for i in range(len(text)):
+        text[i] = re.sub(r"(\d+(?:\.\d+)?(?:[+\-/*]\d+(?:\.\d+)?)+)", conv, text[i])
 
 
 def main():
     lines = separate_by_lines(TEXT)
     while True:
         usr_input = ask_menu()
-        match usr_input:
-            case 1:
-                left_align(lines)
-            case 2:
-                right_align(lines)
-            case 3:
-                width_align(lines)
-            case 4:
-                word = input(">>> Введите слово, которое необходимо удалить: ")
-                replace_word(lines, word, "")
-            case 5:
-                word = input(">>> Введите слово, которое необходимо удалить: ")
-                new_word = input(f">>> Введите слово, на которое необходимо заменить {word}: ")
-                replace_word(lines, word, new_word)
-            case 6:
-                solve_math(lines)
-            case 7:
-                delete_shortest(lines)
-            case 8:
-                exit(0)
+        if usr_input == 1:
+            left_align(lines)
+        elif usr_input == 2:
+            right_align(lines)
+        elif usr_input == 3:
+            width_align(lines)
+        elif usr_input == 4:
+            word = input(">>> Введите слово, которое необходимо удалить: ")
+            replace_word(lines, word, "")
+        elif usr_input == 5:
+            word = input(">>> Введите слово, которое необходимо удалить: ")
+            new_word = input(f">>> Введите слово, на которое необходимо заменить {word}: ")
+            replace_word(lines, word, new_word)
+        elif usr_input == 6:
+            solve_math(lines)
+        elif usr_input == 7:
+            polish(lines)
+        elif usr_input == 8:
+            exit(0)
 
         print(*lines, sep="\n")
         # utils.press_anykey()
