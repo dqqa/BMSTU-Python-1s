@@ -86,10 +86,24 @@ def add_new_row(file, row: Iterable, index: int):
         raise ValueError
     data = struct.pack(struct_fmt, *row)
     with open(file, "r+b") as fp:
+        if os.fstat(fp.fileno()).st_size < size * index:
+            raise ValueError
         tmp_data = fp.read()
-        fp.truncate(0)
-        fp.seek(0)
-        fp.write(tmp_data[: size * index] + data + tmp_data[size * (index) :])
+        fp.truncate(size * index)
+        fp.seek(size * index)
+        fp.write(data + tmp_data[size * (index) :])
+
+
+def delete_row(file, index):
+    struct_fmt = "<I255sH"
+    size = struct.calcsize(struct_fmt)
+    with open(file, "r+b") as fp:
+        if os.fstat(fp.fileno()).st_size < size * index:
+            raise ValueError
+        tmp_data = fp.read()
+        fp.truncate(size * index)
+        fp.seek(size * index)
+        fp.write(tmp_data[size * (index + 1) :])
 
 
 def main():
@@ -97,6 +111,7 @@ def main():
     while True:
         choice = print_menu()
         if choice == 1:
+            print("Текущее состояние базы данных:")
             for row in read_rows_db(database):
                 print(row)
         elif choice == 2:
@@ -113,11 +128,27 @@ def main():
                 except ValueError:
                     print("Введено неверное значение! Попробуйте еще раз.")
         elif choice == 3:
-            pass
+            while True:
+                index = int(input(">>> Введите индекс строки для удаления: "))
+                try:
+                    delete_row(database, index)
+                    break
+                except ValueError:
+                    print("Введено неверное значение! Попробуйте еще раз.")
         elif choice == 4:
-            pass
+            search_term = input(">>> Введите элемент, который хотите найти: ")
+            print("Найденные элементы:")
+            for row in read_rows_db(database):
+                if any(str(c) == search_term for c in row):
+                    print(*[f"{c:>13}|" for c in row], sep="")
         elif choice == 5:
-            pass
+            search_term = input(
+                ">>> Введите элементы, которые хотите найти через пробел: "
+            ).split()
+            print("Найденные элементы:")
+            for row in read_rows_db(database):
+                if all(t in map(str, row) for t in search_term):
+                    print(*[f"{c:>13}|" for c in row], sep="")
 
 
 if __name__ == "__main__":
