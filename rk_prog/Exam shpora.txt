@@ -1,0 +1,175 @@
+перевод из десятичной в римскую
+```
+s = int(input())
+
+ones = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX']
+tens = ['', 'X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC']
+hunds = ['', 'C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'DM']
+thsnd = ['', 'M', 'MM', 'MMM', 'MMMM']
+
+ans = thsnd[s // 1000] + hunds[s // 100 % 10] + tens[s // 10 % 10] + ones[s % 10]
+print(ans)
+```
+
+перевод из римской в десятичную
+```
+s = input()
+arr = {
+    'I': 1,
+    'V': 5,
+    'X': 10,
+    'L': 50,
+    'C': 100,
+    'D': 500,
+    'M': 1000
+}
+
+ans = 0
+cnt = arr[s[0]]
+for i in range(1, len(s)):
+    ans += cnt if arr[s[i]] <= cnt else cnt * -1
+    cnt = arr[s[i]]
+
+print(ans + arr[s[-1]])```
+
+сортировка вставками
+def insertion_sort(seq):
+	for i in range(1, len(seq)):
+		key = seq[i]
+		j = i-1
+		while j >=0 and key < seq[j] :
+			seq[j+1] = seq[j]
+			j -= 1
+		seq[j+1] = key 
+
+сортировка выбором
+def selection_sort(seq):
+	n = len(seq)
+	for i in range(n-1):
+		m = i
+		for j in range(i+1, n):
+			if seq[j] < seq[m]:
+				m = j
+		seq[i], seq[m] = seq[m], seq[i]
+
+метод простых вставок
+def insertion_sort(seq):
+	for i in range(1, len(seq)):
+		key = seq[i]
+		j = i-1
+		while j >=0 and key < seq[j] :
+			seq[j+1] = seq[j]
+			j -= 1
+		seq[j+1] = key
+
+метод вставок с бинарным поиском
+def insertion_bin_sort(seq):
+	n = len(seq)
+	for i in range(1, n):
+		key = seq[i]
+		lo, hi = 0, i
+		while lo < hi:
+			m = lo + (hi - lo) // 2
+			if key < seq[m]:
+				hi = m
+			else:
+				lo = m + 1
+		for j in range(i, lo, -1):
+			seq[j] = seq[j-1]
+		seq[lo] = key
+	return seq
+
+метод вставки с барьером
+def insertion_sort_with_barrier(seq):
+	seq = [0] + seq
+	for i in range(1, len(seq)):
+		seq[0] = seq[i]
+		j = i - 1
+		while seq[0] < seq[j]:
+			seq[j+1] = seq[j]
+			j -= 1
+		seq[j+1] = seq[0]
+	return seq[1:]
+
+метод шелла
+def shell_sort(seq):
+	inc = len(seq) // 2
+	while inc > 0:
+		for i, elem in enumerate(seq):
+			while i >= inc and elem < seq[i - inc]:
+				seq[i] = seq[i - inc]
+				i -= inc
+			seq[i] = elem
+		inc //= 2
+	return seq
+
+сортировка пузырьком
+def bubble_sort(seq):
+	for i in range(len(seq)):
+		for j in range(len(seq)-i-1):
+			if seq[j] > seq[j+1]:
+				seq[j], seq[j+1] = seq[j+1], seq[j]
+
+сортировка пузырьком с флагом
+def bubble_with_flag_sort(seq):
+	for i in range(len(seq)):
+		swapped = False
+		for j in range(len(seq)-i-1):
+			if seq[j] > seq[j+1]:
+				seq[j], seq[j+1] = seq[j+1], seq[j]
+				swapped = True
+		if not swapped:
+			break
+
+метод шейкер-сортировки
+def shaker_sort(seq):
+	swapped = True
+	start = 0
+	end = len(seq) - 1
+	while swapped:
+		swapped = False
+		for i in range(start, end):
+			if seq[i] > seq[i+1]:
+				seq[i], seq[i+1] = seq[i+1], seq[i]
+				swapped = True
+		if not swapped:
+			break
+		swapped = False
+		end -= 1
+		for i in range(end - 1, start - 1, -1):
+			if seq[i] > seq[i+1]:
+				seq[i], seq[i+1] = seq[i+1], seq[i]
+				swapped = True
+		start += 1
+
+сортировка кучей (пирамидальная) (в 2 ф-ции)
+def heapify(seq, n, i):
+	largest = i
+	l = 2 * i + 1
+	r = 2 * i + 2
+	if l < n and seq[i] < seq[l]:
+		largest = l
+	if r < n and seq[largest] < seq[r]:
+		largest = r
+	if largest != i:
+		seq[i], seq[largest] = seq[largest], seq[i]
+		heapify(seq, n, largest)
+def heapSort(seq):
+	n = len(seq)
+	for i in range(n // 2 - 1, -1, -1):
+		heapify(seq, n, i)
+	for i in range(n - 1, 0, -1):
+		seq[i], seq[0] = seq[0], seq[i]
+		heapify(seq, i, 0)
+
+быстрая сортировка
+import random
+def quicksort(seq):
+	if len(seq) <= 1:
+		return seq
+	else:
+		q = random.choice(seq)
+	l_nums = [n for n in seq if n < q]
+	e_nums = [q] * seq.count(q)
+	b_nums = [n for n in seq if n > q]
+	return quicksort(l_nums) + e_nums + quicksort(b_nums)
